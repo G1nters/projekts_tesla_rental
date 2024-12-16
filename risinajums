@@ -1,0 +1,47 @@
+using System;
+using System.Data.SQLite;
+
+namespace TeslaRental
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // ... (datubāzes savienojuma izveide)
+
+            // Piemērs: Automašīnas iznomāšana
+            int carId = 1;
+            int customerId = 2;
+            DateTime startTime = DateTime.Now;
+            DateTime endTime = startTime.AddHours(2).AddMinutes(30);
+            int kilometersDriven = 50;
+
+            // Aprēķinām izmaksas
+            decimal totalCost = CalculateCost(carId, startTime, endTime, kilometersDriven);
+
+            // Saglabājam īri datubāzē
+            using (SQLiteCommand command = new SQLiteCommand("INSERT INTO Rentals (CarId, CustomerId, StartTime, EndTime, KilometersDriven, TotalCost) VALUES (@carId, @customerId, @startTime, @endTime, @kilometersDriven, @totalCost)", connection))
+            {
+                command.Parameters.AddWithValue("@carId", carId);
+                // ... (pārējie parametri)
+                command.ExecuteNonQuery();
+            }
+
+            // ... (citas funkcijas)
+        }
+
+        static decimal CalculateCost(int carId, DateTime startTime, DateTime endTime, int kilometersDriven)
+        {
+            // Izgūstam automašīnas informāciju no datubāzes
+            // ...
+
+            // Aprēķinām laiku stundās
+            double hours = (endTime - startTime).TotalHours;
+
+            // Aprēķinām kopējo izmaksu
+            decimal totalCost = (decimal)hours * hourlyRate + (decimal)kilometersDriven * kilometerRate;
+
+            return totalCost;
+        }
+    }
+}
